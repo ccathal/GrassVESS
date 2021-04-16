@@ -6,22 +6,67 @@ import 'package:flutter_app/tree.dart';
 import 'package:flutter_app/universalWidgets.dart';
 import 'main.dart';
 
-/*
-  Main Assessment Page
- */
-
+///
+/// Class: AssessmentPage
+///
+/// This page shows a flow chart picture with an
+/// instruction box and 'yes/no/back/redo' button panel.
+///
+/// Input: A class object [LinkdList].
+/// Return: [Widget] of the assessment page.
+///
 class AssessmentPage extends StatelessWidget {
   final LinkdList linkedList;
 
   AssessmentPage(this.linkedList);
 
-  Widget futureProfileCardDraggableWidget() {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: appBarWidget('GrassVESS Assessment'),
+        body: Center(
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+              /// Instruction Box Widget.
+              Align(
+                  alignment: Alignment.topCenter,
+                  child: futureInstructionBoxWidget(
+                      linkedList.getPreviousElement().getLinkName())),
+
+              /// Flow Chart Card Widget.
+              Expanded(
+                  child: Align(
+                      alignment: Alignment.center,
+                      child: _futureFlowChartCardWidget())),
+
+              /// Button Panel Widget.
+              Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 40),
+                    child: ButtonPanel(linkedList),
+                  ))
+            ])));
+  }
+
+  ///
+  /// Method: _futureFlowChartCardWidget
+  ///
+  /// Future to retrieve flow chart data from JSON file
+  /// and populate the flow chart card.
+  ///
+  /// Return [Widget] of the flow chart card with populated information.
+  ///
+  Widget _futureFlowChartCardWidget() {
+    /// checks flow chart link conditions for two link2_2 and link3_3.
     _checkLinkConditions(linkedList.getPreviousElement());
-    return new FutureBuilder<List>(
-      future: readJsonCard(linkedList.getPreviousElement().getLinkName()),
+    return new FutureBuilder<dynamic>(
+      future: readJson(linkedList.getPreviousElement().getLinkName(), 'card'),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return ProfileCardDraggable(snapshot.data[0], snapshot.data[1]);
+          return FlowChartCard(snapshot.data[1], snapshot.data[0]);
         } else if (snapshot.hasError) {
           return new Text("${snapshot.error}");
         }
@@ -30,117 +75,45 @@ class AssessmentPage extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-            title: Text('GrassVESS Assessment'),
-            automaticallyImplyLeading: false),
-        body: Center(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Align(
-                      alignment: Alignment.topCenter,
-                      child: futureInstructionBoxWidget(linkedList.getPreviousElement().getLinkName())),
-                  Expanded(
-                      child: Align(
-                          alignment: Alignment.center,
-                          child: futureProfileCardDraggableWidget())),
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 40),
-                        child: ButtonPanel(linkedList),
-                      ))
-                ])));
-  }
-
+  ///
+  /// Method: _checkLinkConditions
+  ///
+  /// Checks certain flow chart nodes so that link conditions of
+  /// nodes 2_2 and 3_3 can be amended to have correct flow through the chart.
+  ///
+  /// Input: [Link] to check condition
+  /// Return: [void]
+  ///
   void _checkLinkConditions(Link link) {
+    /// check if the links are any of the following to amended flow for link2_2
     if (link.id == "link1_2" || link.id == 'link2_3' || link.id == 'link2_1') {
       setLinkCondition2_2(link);
     }
+
+    /// check if the links are any of the following to amended flow for link3_3
     if (link.id == 'link2_5' || link.id == 'link3_4' || link.id == 'link3_2') {
       setLinkCondition3_3(link);
     }
   }
 }
 
-Widget futureInstructionBoxWidget(linkName) {
-  return new FutureBuilder<String>(
-    future:
-    readJsonInstruction(linkName),
-    builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        return InstructionBox(snapshot.data);
-      } else if (snapshot.hasError) {
-        return new Text("${snapshot.error}");
-      }
-      return new CircularProgressIndicator();
-    },
-  );
-}
-
-/*
-  Instruction TextBox
- */
-
-class InstructionBox extends StatelessWidget {
-  final String instruction;
-
-  InstructionBox(this.instruction);
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Container(
-          width: double.infinity,
-          margin: const EdgeInsets.only(
-              left: 10.0, right: 10.0, top: 30.0, bottom: 5.0),
-          padding: const EdgeInsets.all(15.0),
-          decoration: _myBoxDecoration(),
-          child: Text(
-            instruction,
-            style: TextStyle(fontSize: 20.0),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Positioned(
-            left: 30,
-            top: 20,
-            child: Container(
-              padding: EdgeInsets.only(bottom: 10, left: 10, right: 10),
-              color: Color(0xFFF5F5F5),
-              child: Text(
-                'Instruction',
-                style: TextStyle(color: Colors.black, fontSize: 16),
-              ),
-            )),
-      ],
-    );
-  }
-
-  BoxDecoration _myBoxDecoration() {
-    return BoxDecoration(
-      border: Border.all(color: Colors.blue, width: 2.0),
-      borderRadius:
-      BorderRadius.all(Radius.circular(5.0) //         <--- border radius here
-      ),
-    );
-  }
-}
-
-/*
-  Profile Card Widget
- */
-
-class ProfileCardDraggable extends StatelessWidget {
+///
+/// Class: FlowChartCard
+///
+/// Displays an individual flow chart card.
+/// This page shows a flow chart picture with an
+/// instruction box and 'yes/no/back/redo' button panel.
+///
+/// Input:
+///   String [information] is the flow chart card information.
+///   String [picture] is the image for the card.
+/// Return: [Widget] of the flow chart card with information and image.
+///
+class FlowChartCard extends StatelessWidget {
   final String information;
   final String picture;
 
-  ProfileCardDraggable(this.information, this.picture);
+  FlowChartCard(this.information, this.picture);
 
   @override
   Widget build(BuildContext context) {
@@ -152,10 +125,13 @@ class ProfileCardDraggable extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
+          /// Card Image displayed.
           Flexible(
             child: Image.asset('images/' + picture,
                 width: yourDimension, height: yourDimension, fit: BoxFit.fill),
           ),
+
+          /// Card Information displayed.
           Container(
               padding: EdgeInsets.symmetric(vertical: 22.0, horizontal: 6.0),
               child: Column(
@@ -172,10 +148,14 @@ class ProfileCardDraggable extends StatelessWidget {
   }
 }
 
-/*
-  Button Panel
- */
-
+///
+/// Class: ButtonPanel
+///
+/// Displays a button panel with 'back/yes/no/redo' buttons.
+///
+/// Input: A class object [LinkdList].
+/// Return: [Widget] of the button panel.
+///
 class ButtonPanel extends StatelessWidget {
   final LinkdList linkedList;
 
@@ -187,6 +167,7 @@ class ButtonPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
+          /// Back button.
           IconButton(
             icon: Icon(Icons.arrow_back_outlined),
             tooltip: 'Go Back',
@@ -202,69 +183,85 @@ class ButtonPanel extends StatelessWidget {
               }
             },
           ),
+
+          /// Yes Button.
           if (!(linkedList.getPreviousElement().right.getLinkName() ==
               'null_link'))
+
+            /// if right link if not null, display button
             SizedBox(
               width: 130,
               height: 60,
               child: TextButton(
                   style: TextButton.styleFrom(
                       primary: Colors.white,
-                      backgroundColor:
-                      _getYesColor(linkedList.getPreviousElement()),
+                      backgroundColor: Colors.green,
                       textStyle:
-                      TextStyle(fontSize: 24, fontStyle: FontStyle.italic)),
+                          TextStyle(fontSize: 24, fontStyle: FontStyle.italic)),
                   child: Text('Yes'),
                   onPressed: () {
+                    /// Add right link to list.
                     Link addLink = linkedList.getPreviousElement().right;
-                    _nextAssessmentRoute(addLink, linkedList, context);
+                    linkedList.addLinkElement(addLink);
+
+                    /// Display next assessment page.
+                    _nextAssessmentRoute(addLink, context);
                   }),
             ),
+
+          /// No Button.
           if (!(linkedList.getPreviousElement().left.getLinkName() ==
               'null_link'))
+
+            /// if left link if not null, display button.
             SizedBox(
               width: 130,
               height: 60,
               child: TextButton(
                   style: TextButton.styleFrom(
                       primary: Colors.white,
-                      backgroundColor:
-                      _getNoColor(linkedList.getPreviousElement()),
+                      backgroundColor: Colors.red,
                       textStyle:
-                      TextStyle(fontSize: 24, fontStyle: FontStyle.italic)),
+                          TextStyle(fontSize: 24, fontStyle: FontStyle.italic)),
                   child: Text('No'),
                   onPressed: () {
+                    /// Add left link to list.
                     Link addLink = linkedList.getPreviousElement().left;
-                    _nextAssessmentRoute(addLink, linkedList, context);
+                    linkedList.addLinkElement(addLink);
+
+                    /// Display next assessment page.
+                    _nextAssessmentRoute(addLink, context);
                   }),
             ),
+
+          /// Redo Button.
           redoIconButtonWidget(context),
         ]);
   }
 
-  Color _getYesColor(Link link) {
-    if (link.right.getLinkName() != 'null_link') {
-      return Colors.green;
-    } else {
-      return Colors.blueGrey;
-    }
-  }
-
-  Color _getNoColor(Link link) {
-    if (link.left.getLinkName() != 'null_link') {
-      return Colors.red;
-    } else {
-      return Colors.blueGrey;
-    }
-  }
-
-  _nextAssessmentRoute(addLink, linkedList, context) {
-    linkedList.addLinkElement(addLink);
+  ///
+  /// Method: _nextAssessmentRoute
+  ///
+  /// Displays the next route of the assessment.
+  /// Checks to see if the new link clicked on is another
+  /// flow chart link or an Sq Score link (link4_*).
+  ///
+  /// Input:
+  ///   [Link] of the next page depending on the button clicked.
+  ///   [BuildContext] handle for the current widget.
+  /// Return: [void]
+  ///
+  _nextAssessmentRoute(Link addLink, BuildContext context) {
     Navigator.of(context).pop();
+
+    /// if the next link is an Sq Score.
     if (linkedList.getPreviousElement().getLinkName().contains('link4_')) {
       Navigator.of(context)
           .push(Routes.createRoutingPage(SqScorePage(linkedList)));
-    } else {
+    }
+
+    /// else, next link is another flow chart item.
+    else {
       Navigator.of(context)
           .push(Routes.createRoutingPage(AssessmentPage(linkedList)));
     }

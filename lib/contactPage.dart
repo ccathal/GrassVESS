@@ -1,20 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/universalWidgets.dart';
 import 'package:flutter_app/urlLauncher.dart';
 
+///
+/// Class: DisplayContactInformation
+///
+/// Displays GrassLand Agro Contact Information (phone, email, maps).
+///
+/// Return: [Widget] of the contact page.
+///
 class DisplayContactInformation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: Text('Previous GrassVESS Assessments'),
-            automaticallyImplyLeading: false),
+        appBar: appBarWidget('Previous GrassVESS Assessment'),
         body: Center(
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
               Spacer(),
+              /// Phone icon button.
               IconButton(
                 //icon: Icon(Icons.phone),
                 icon: new Icon(Icons.phone, size: 50.0),
@@ -26,18 +33,20 @@ class DisplayContactInformation extends StatelessWidget {
               Padding(padding: EdgeInsets.only(bottom: 8.0)),
               Text('(+353) 86 846 6734'),
               Spacer(),
+              /// Email icon button.
               IconButton(
                 //icon: Icon(Icons.email),
                 icon: new Icon(Icons.email, size: 50.0),
                 tooltip: 'Email',
                 onPressed: () {
                   launchMailURL('cathalcorbett3@gmail.com', 'GrassVESS App Query',
-                      'ToDo', context);
+                      'Your Query ...', context);
                 },
               ),
               Padding(padding: EdgeInsets.only(bottom: 8.0)),
               Text('cathalcorbett3@gmail.com'),
               Spacer(),
+              /// Map icon buttons (x4).
               _mapIcon(52.6528337, -8.6584745, context),
               Padding(padding: EdgeInsets.only(bottom: 8.0)),
               Text('Grassland Agro Limerick'),
@@ -55,17 +64,27 @@ class DisplayContactInformation extends StatelessWidget {
               Text('Grassland Agro Meath'),
               Spacer(),
             ])));
-
   }
 }
 
-_mapIcon(double x_val, double y_val, BuildContext context) {
+///
+/// Method: _mapIcon
+///
+/// Displays Maps icon for each Grassland Agro Office.
+///
+/// Input:
+///   [double] xVal is the maps x-coordinate.
+///   [double] yVal is the maps y-coordinate.
+///   [BuildContext] handle for the current widget.
+/// Return: [IconButton] of the map icon.
+///
+IconButton _mapIcon(double xVal, double yVal, BuildContext context) {
   return IconButton(
     //icon: Icon(Icons.email),
     icon: new Icon(Icons.map, size: 50.0),
     tooltip: 'Maps',
     onPressed: () {
-      launchMapURL(x_val, y_val, context);
+      launchMapURL(xVal, yVal, context);
     },
   );
 }

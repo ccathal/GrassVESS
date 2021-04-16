@@ -9,28 +9,39 @@ import 'main.dart';
 
 double sqScore = 0.0;
 
+///
+/// Returns the set sq score.
+///
 double getSqScore() {
   return sqScore;
 }
 
+///
+/// Resets the sq score.
+///
 void setSqScore() {
   sqScore = 0.0;
 }
 
-/*
-  Main Sq Score Page.
- */
-
+///
+/// Class: SqScorePage
+///
+/// Main sq score page displays an instruction box, sq score button, text and
+/// 2 buttons to increment/decrement the sq score, and a button panel.
+///
+/// Input: [linkedList] of the links that have been previously appended.
+/// Output: [Widget] of the sq score page.
+///
 class SqScorePage extends StatelessWidget {
 
   final LinkdList linkedList;
-
   SqScorePage(this.linkedList);
 
+  /// Future to read the json data to populate the button panel.
   Widget futureScoreSqTextButton() {
-    return new FutureBuilder<String>(
+    return new FutureBuilder<dynamic>(
       future:
-      readJsonInformation(linkedList.getPreviousElement().getLinkName()),
+      readJson(linkedList.getPreviousElement().getLinkName(), 'information'),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return DisplayButtonPanelSqScore(snapshot.data, linkedList);
@@ -45,19 +56,20 @@ class SqScorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text('GrassVESS Assessment'),
-          automaticallyImplyLeading: false),
+      appBar: appBarWidget('GrassVESS Assessment'),
       body: Center(
         child: new Stack(children: <Widget>[
+          /// Instruction Box Widget.
           Positioned(
               child: Align(
                   alignment: Alignment.topCenter,
                   child: futureInstructionBoxWidget(linkedList.getPreviousElement().getLinkName()))),
+          /// Sq Score Text Button Widget.
           Positioned(
               child: Align(
                   alignment: Alignment.center,
                   child: futureScoreSqTextButton())),
+          /// Sq Score Button Panel.
           Positioned(
               child: Align(
                   alignment: Alignment.bottomCenter,
@@ -70,14 +82,21 @@ class SqScorePage extends StatelessWidget {
   }
 }
 
-/*
-  Sq Page Display Button Panel.
- */
-
+///
+/// Class: DisplayButtonPanelSqScore & DisplayButtonPanelSqScoreWidget
+///
+/// Sq Page Main Button Stateful Panel consisting sq score display button,
+/// intermediate value text, and intermediate value buttons.
+///
+/// Input:
+///   [information] is the sq score as String.
+///   [linkedList] of the links that have been previously appended.
+/// Returns: [Widget] of the sq score page button panel.
+///
 class DisplayButtonPanelSqScore extends StatefulWidget {
+
   final LinkdList linkedList;
   final String information;
-
   DisplayButtonPanelSqScore(this.information, this.linkedList);
 
   DisplayButtonPanelSqScoreWidget createState() =>
@@ -85,13 +104,10 @@ class DisplayButtonPanelSqScore extends StatefulWidget {
 }
 
 class DisplayButtonPanelSqScoreWidget extends State {
-  String information;
-  LinkdList linkedList;
 
-  DisplayButtonPanelSqScoreWidget(information, linkedList) {
-    this.information = information;
-    this.linkedList = linkedList;
-  }
+  final String information;
+  final LinkdList linkedList;
+  DisplayButtonPanelSqScoreWidget(this.information, this.linkedList);
 
   String buttonText;
 
@@ -109,6 +125,9 @@ class DisplayButtonPanelSqScoreWidget extends State {
   Widget build(BuildContext context) {
     double sqVal;
 
+    ///
+    /// Changes the value of the sq score and text displayed.
+    ///
     void _changeSqValue() {
       if (plusClicked) {
         sqVal = double.parse(information) + 0.5;
@@ -121,7 +140,11 @@ class DisplayButtonPanelSqScoreWidget extends State {
       buttonText = 'Sq ' + sqVal.toString();
     }
 
-    _changeColorMinus() {
+    ///
+    /// Method to change the boolean values when intermediate button '-0.5' is clicked.
+    /// Additionally, the function changes the sq score text.
+    ///
+    void _changeColorMinus() {
       setState(() {
         minusClicked = !minusClicked;
         if (plusClicked) {
@@ -131,7 +154,11 @@ class DisplayButtonPanelSqScoreWidget extends State {
       });
     }
 
-    _changeColorPlus() {
+    ///
+    /// Method to change the boolean values when an intermediate button '+0.5' is clicked.
+    /// Additionally, the function changes the sq score text.
+    ///
+    void _changeColorPlus() {
       setState(() {
         plusClicked = !plusClicked;
         if (minusClicked) {
@@ -213,47 +240,61 @@ class DisplayButtonPanelSqScoreWidget extends State {
               ])
         ]);
   }
+
+  ///
+  /// Default colors for each sq score.
+  ///
+  MaterialColor _getSqColor(double sqVal) {
+    if (sqVal < 1.5) {
+      return Colors.green;
+    }
+    else if (sqVal >= 1.5 && sqVal <= 2.0) {
+      return Colors.lightGreen;
+    }
+    else if (sqVal > 2.0 && sqVal <= 3.0) {
+      return Colors.orange;
+    } else {
+      return Colors.red;
+    }
+  }
+
+  ///
+  /// Method to get the color for the intermediate value '+0.5' button.
+  ///
+  Color _getIntermediateValueButtonColorPlus(String information,
+      bool minusClicked) {
+    if (double.parse(information) >= 4) {
+      return Colors.grey;
+    } else {
+      return minusClicked ? _getSqColor(getSqScore()) : PrimaryColor;
+    }
+  }
+
+  ///
+  /// Method to get the color for the intermediate value '-0.5' button.
+  ///
+  Color _getIntermediateValueButtonColorMinus(String information,
+      bool minusClicked) {
+    if (double.parse(information) <= 1) {
+      return Colors.grey;
+    } else {
+      return minusClicked ? _getSqColor(getSqScore()) : PrimaryColor;
+    }
+  }
+
 }
 
-MaterialColor _getSqColor(double sqVal) {
-  if (sqVal < 1.5) {
-    return Colors.green;
-  }
-  else if (sqVal >= 1.5 && sqVal <= 2.0) {
-    return Colors.lightGreen;
-  }
-  else if (sqVal > 2.0 && sqVal <= 3.0) {
-    return Colors.orange;
-  } else {
-    return Colors.red;
-  }
-}
-
-MaterialColor _getIntermediateValueButtonColorPlus(String information,
-    bool minusClicked) {
-  if (double.parse(information) >= 4) {
-    return Colors.grey;
-  } else {
-    return minusClicked ? _getSqColor(getSqScore()) : Colors.blue;
-  }
-}
-
-MaterialColor _getIntermediateValueButtonColorMinus(String information,
-    bool minusClicked) {
-  if (double.parse(information) <= 1) {
-    return Colors.grey;
-  } else {
-    return minusClicked ? _getSqColor(getSqScore()) : Colors.blue;
-  }
-}
-
-/*
-  Sq Page Submit Button Panel.
- */
-
+///
+/// Class: ButtonPanelSqSubmit
+///
+/// Sq Page Submit Button Panel consisting of back/continue/redo buttons.
+///
+/// Input: [linkedList] of the links that have been previously appended.
+/// Returns: [Widget] of the sq score page button panel.
+///
 class ButtonPanelSqSubmit extends StatelessWidget {
-  final LinkdList linkedList;
 
+  final LinkdList linkedList;
   ButtonPanelSqSubmit(this.linkedList);
 
   @override
@@ -262,6 +303,7 @@ class ButtonPanelSqSubmit extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
+          /// Go Back Button.
           IconButton(
             icon: Icon(Icons.arrow_back_outlined),
             tooltip: 'Go Back',
@@ -277,13 +319,14 @@ class ButtonPanelSqSubmit extends StatelessWidget {
               }
             },
           ),
+          /// Continue Button.
           SizedBox(
             width: 130,
             height: 60,
             child: TextButton(
               style: TextButton.styleFrom(
                   primary: Colors.white,
-                  backgroundColor: Colors.blue,
+                  backgroundColor: PrimaryColor,
                   textStyle:
                   TextStyle(fontSize: 24, fontStyle: FontStyle.italic)),
               child: Text('Continue'),
@@ -294,6 +337,7 @@ class ButtonPanelSqSubmit extends StatelessWidget {
               },
             ),
           ),
+          /// Redo Assessment Button.
           redoIconButtonWidget(context),
         ]);
   }

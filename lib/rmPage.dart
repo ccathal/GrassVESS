@@ -3,34 +3,43 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/parseJsonFile.dart';
 import 'package:flutter_app/routes.dart';
+import 'package:flutter_app/universalWidgets.dart';
 
-import 'assessmentPage.dart';
 import 'assessmentSummaryPage.dart';
 
 double rmScore = 0.0;
 
+///
+/// Getter method for rm score.
+///
 double getRmScore() {
   return rmScore;
 }
 
+///
+/// Setter method for rm score.
+///
 double setRmScore() {
   return rmScore = 0.0;
 }
 
-/*
-  Main class for the Rm Score Page.
- */
-
+///
+/// Class: RmScorePage
+///
+/// Main rm score page displays an instruction box and 3 cards corresponding
+/// to the 3 rm scores. User can click on any of the 3 cards to indicate their
+/// desired rm score.
+///
+/// Return: [Widget] of the rm score page.
+///
 class RmScorePage extends StatelessWidget {
-
-  // FutureBuilder to populate Rm Score Card.
-  Widget futureRmCardWidget(String rmStr) {
-    return new FutureBuilder<List<dynamic>>(
-      future: readJsonCard(rmStr),
+  /// FutureBuilder to populate Rm Score Card.
+  Widget _futureRmCardWidget(String rmStr) {
+    return new FutureBuilder<dynamic>(
+      future: readJson(rmStr, 'card'),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return RmCard(
-              snapshot.data[1], snapshot.data[0], rmStr);
+          return RmCard(snapshot.data[0], snapshot.data[1], rmStr);
         } else if (snapshot.hasError) {
           return new Text("${snapshot.error}");
         }
@@ -40,28 +49,34 @@ class RmScorePage extends StatelessWidget {
   }
 
   @override
-  // Main Page Widget.
+
+  /// Main rm score page widget.
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text('GrassVESS Assessment'),
-          automaticallyImplyLeading: false),
+      appBar: appBarWidget('GrassVESS Assessment'),
       body: SingleChildScrollView(
         child: new Column(children: <Widget>[
           futureInstructionBoxWidget('rm_1'),
-          futureRmCardWidget('rm_1'),
-          futureRmCardWidget('rm_2'),
-          futureRmCardWidget('rm_3'),
+          _futureRmCardWidget('rm_1'),
+          _futureRmCardWidget('rm_2'),
+          _futureRmCardWidget('rm_3'),
         ]),
       ),
     );
   }
 }
 
-/*
-  Profile Card Widget
- */
-
+///
+/// Class: RmCard & RmCardWidget
+///
+/// Populates a card with title, information and picture of single rm score.
+///
+/// Input:
+///   [String] information of rm score description.
+///   [String] picture of rm score card.
+///   [String] title of rm score card.
+/// Return: [Widget] of the rm score page.
+///
 class RmCard extends StatefulWidget {
   final String information;
   final String picture;
@@ -69,29 +84,8 @@ class RmCard extends StatefulWidget {
 
   RmCard(this.picture, this.information, this.title);
 
-  RmCardWidget createState() =>
-      RmCardWidget(picture, information, title);
+  RmCardWidget createState() => RmCardWidget(picture, information, title);
 }
-
-class UnorderedListItem extends StatelessWidget {
-  UnorderedListItem(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text("• "),
-        Expanded(
-          child: Text(text),
-        ),
-      ],
-    );
-  }
-}
-
 
 class RmCardWidget extends State {
   final String information;
@@ -100,32 +94,30 @@ class RmCardWidget extends State {
 
   RmCardWidget(this.picture, this.information, this.title);
 
+  /// boolean value to know if rm card has been clicked on.
   bool clickedOn = false;
 
   @override
   Widget build(BuildContext context) {
-
-    List<String> lines;
+    /// Split information string into list based on new line.
     LineSplitter ls = new LineSplitter();
-    lines = ls.convert(information);
+    List<String> lines = ls.convert(information);
 
+    /// Populate list of bullet pointed strings.
     var widgetList = <Widget>[];
     for (var text in lines) {
-      // Add list item
-      widgetList.add(UnorderedListItem(text));
-      // Add space between items
+      /// Add list item
+      widgetList.add(_bulletPointString(text));
+
+      /// Add space between items
       widgetList.add(SizedBox(height: 5.0));
     }
-
-
 
     double rmNum = double.parse(title[title.length - 1]);
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
         child: Card(
-            color: clickedOn
-                ? _getRmColors(double.parse(title[title.length - 1]))
-                : Colors.white60,
+            color: clickedOn ? _getRmColorsClicked(rmNum) : _getRmColors(rmNum),
             child: InkWell(
                 onTap: () async {
                   _rmCardStateSet(rmNum);
@@ -136,8 +128,8 @@ class RmCardWidget extends State {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Flexible(
-                        child: Image.asset('images/' + picture,
-                            fit: BoxFit.cover),
+                        child:
+                            Image.asset('images/' + picture, fit: BoxFit.cover),
                       ),
                       Container(
                           padding: EdgeInsets.symmetric(
@@ -151,17 +143,31 @@ class RmCardWidget extends State {
                                       fontSize: 20.0,
                                       fontWeight: FontWeight.w700)),
                               Padding(padding: EdgeInsets.only(bottom: 8.0)),
-                              // Text(information,
-                              //     style: TextStyle(
-                              //         color: Colors.black, fontSize: 16),
-                              //     textAlign: TextAlign.start),
-                            Column(children: widgetList),
+                              Column(children: widgetList),
                             ],
                           ))
                     ]))));
   }
 
-  MaterialColor _getRmColors(rmScore) {
+  ///
+  /// Returns string in bullet point format with necessary indentation as row.
+  ///
+  Row _bulletPointString(String text) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text("• "),
+        Expanded(
+          child: Text(text),
+        ),
+      ],
+    );
+  }
+
+  ///
+  /// Return color corresponding to rm score when clicked on.
+  ///
+  MaterialColor _getRmColorsClicked(double rmScore) {
     if (rmScore == 1.0) {
       return Colors.green;
     } else if (rmScore == 2.0) {
@@ -171,14 +177,31 @@ class RmCardWidget extends State {
     }
   }
 
-  _rmCardStateSet(rmNum) async {
+  ///
+  /// Return color corresponding to rm score.
+  ///
+  Color _getRmColors(double rmScore) {
+    if (rmScore == 1.0) {
+      return Colors.green[200];
+    } else if (rmScore == 2.0) {
+      return Colors.orange[200];
+    } else {
+      return Colors.red[200];
+    }
+  }
+
+  ///
+  /// Once rm card is clicked on change color, display for 1 second,
+  /// and display next page in the application.
+  ///
+  void _rmCardStateSet(rmNum) async {
     setState(() {
       clickedOn = !clickedOn;
     });
     rmScore = rmNum;
     await Future.delayed(Duration(seconds: 1));
     Navigator.of(context).pop();
-    Navigator.of(context).push(
-        Routes.createRoutingPage(AssessmentSummaryPage(rmScore)));
+    Navigator.of(context)
+        .push(Routes.createRoutingPage(MainAssessmentSummaryPage(rmScore)));
   }
 }

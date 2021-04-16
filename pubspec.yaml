@@ -42,7 +42,7 @@ flutter_launcher_name:
 flutter_icons:
   android: 'launcher_icon'
   ios: true
-  image_path: 'images/grassland_logo_transparent_cropped.png'
+  image_path: 'images/grassland_icon_new.png'
 
 dev_dependencies:
   flutter_test:

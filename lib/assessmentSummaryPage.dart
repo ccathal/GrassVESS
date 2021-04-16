@@ -13,69 +13,69 @@ import 'package:geolocator/geolocator.dart';
 import 'main.dart';
 
 String descriptionField;
-String gpsField;
-DateTime dateTimeField;
 
-String getGpsField() {
-  return gpsField;
-}
-
-void setGpsField() {
-  gpsField = 'null: null';
-}
-
-String getDescriptionField() {
+///
+/// Method: getDescriptionField
+///
+/// Local getter method for the GPS location.
+///
+/// Return: [String] corresponding assessment description input by user.
+///
+String _getDescriptionField() {
   return descriptionField;
 }
 
+///
+/// Method: setGpsField
+///
+/// Global setter method for the Description field.
+/// Ensures the Description field string is null.
+///
+/// Return: [void].
+///
 void setDescriptionField() {
-  descriptionField = 'null';
+  descriptionField = 'none';
 }
 
-DateTime getDateTimeField() {
-  return dateTimeField;
-}
 
-void setDateTimeField() {
-  dateTimeField = null;
-}
+///
+/// Class: AssessmentSummaryPage
+///
+/// FutureBuilder to retrieve data to populate the main assessment summary page.
+///
+/// Input: [double] of the rm score.
+/// Return: [Widget] of the assessment summary page.
+///
+class MainAssessmentSummaryPage extends StatelessWidget {
 
-/*
-  Main Assessment Summary Page.
- */
-
-class AssessmentSummaryPage extends StatelessWidget {
-  final double rmScore;
-
-  AssessmentSummaryPage(this.rmScore);
-
+  /// Retrieve sq score.
   final double sqScore = getSqScore();
+  final double rmScore;
+  MainAssessmentSummaryPage(this.rmScore);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text('GrassVESS Assessment'),
-          automaticallyImplyLeading: false),
+      appBar: appBarWidget('GrassVESS Assessment'),
       body: Center(
+        /// Get GPS location.
         child: FutureBuilder<Position>(
           future: determinePosition(),
           builder: (context, snapshot) {
+            /// if valid GPS location returned.
             if (snapshot.hasData) {
               Position pos = snapshot.data;
-              gpsField = '${pos.latitude}: ${pos.longitude}';
+              String gpsField = '${pos.latitude}: ${pos.longitude}';
               return new Column(children: <Widget>[
-                ShowSummaryInformation(sqScore, rmScore),
+                ShowSummaryInformation(sqScore, rmScore, gpsField),
               ]);
-            } else if (snapshot.hasError) {
-
-              final snackBar = SnackBar(
-                content: Text(snapshot.error.toString()),
-              );
-
-              gpsField = 'null: null';
+            }
+            /// if error occurred in retrieving the GPS.
+            else if (snapshot.hasError) {
+              SnackBar snackBar = makeSnackBar(snapshot.error.toString());
+              String gpsField = 'null: null';
               return new Column(children: <Widget>[
-                ShowSummaryInformation(sqScore, rmScore, snackBar),
+                ShowSummaryInformation(sqScore, rmScore, gpsField, snackBar),
               ]);
             }
             return new CircularProgressIndicator();
@@ -86,25 +86,38 @@ class AssessmentSummaryPage extends StatelessWidget {
   }
 }
 
-/*
-  Widget to show Assessment Summary Information.
- */
-
+///
+/// Class: ShowSummaryInformation
+///
+/// Displays the main assessment summary page consisting of
+/// sq score, rm score, date time, gps location and
+/// and input description field for the application user.
+///
+/// Input:
+///   [double] of the rm score.
+///   [double] of the sq score.
+///   [SnackBar] widget if error message needs to be displayed in retrieving GPS.
+/// Return: [Widget] of the assessment summary page.
+///
 class ShowSummaryInformation extends StatelessWidget {
+
   final double sqScore;
   final double rmScore;
+  final String gpsField;
   final SnackBar snackBar;
-
-  ShowSummaryInformation(this.sqScore, this.rmScore, [this.snackBar]);
+  ShowSummaryInformation(this.sqScore, this.rmScore, this.gpsField, [this.snackBar]);
 
   @override
   Widget build(BuildContext context) {
+
+    /// Display SnackBar if GPS error occurs.
     Future.delayed(Duration.zero,() {
-      if(snackBar != null) { // display snackbar if position error occurs
+      if(snackBar != null) {
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     });
-    dateTimeField = DateTime.now();
+    DateTime dateTimeField = DateTime.now();
+
     return Expanded(
         child: Padding(
             padding: const EdgeInsets.all(5.0),
@@ -120,8 +133,11 @@ class ShowSummaryInformation extends StatelessWidget {
                   Spacer(),
                   _textFormSummary(DateTime.now().toString(), 'Date & Time'),
                   Spacer(),
-                  _textFormSummary(getGpsField(), 'GPS (longitude: latitude)'),
+                  _textFormSummary(gpsField, 'GPS (longitude: latitude)'),
                   Spacer(),
+                  /// Input field for user to enter description.
+                  /// User is limited to 50 characters.
+                  /// User cannot enter commas (,) as the storage file is in CSV format.
                   TextFormField(
                     inputFormatters: [FilteringTextInputFormatter.deny(',')],
                     //controller: TextEditingController(text: text),
@@ -140,12 +156,22 @@ class ShowSummaryInformation extends StatelessWidget {
                   ),
                   Spacer(),
                   SummaryButtonPanel(
-                      sqScore, rmScore, gpsField, descriptionField),
+                      sqScore, rmScore, gpsField, dateTimeField),
                   Spacer(),
                 ])));
   }
 
-  _textFormSummary(initialVal, label) {
+  ///
+  /// Method: _textFormSummary
+  ///
+  /// TextFormField widget the displays an initial value and label.
+  ///
+  /// Input:
+  ///   [String] initialVal is the text field initial value.
+  ///   [String] label is the text field label.
+  /// Return: [TextFormField] of the initial value and label.
+  ///
+  TextFormField _textFormSummary(String initialVal, String label) {
     return TextFormField(
       readOnly: true,
       initialValue: initialVal,
@@ -160,17 +186,24 @@ class ShowSummaryInformation extends StatelessWidget {
   }
 }
 
-/*
-  Assessment Summary Button Panel.
- */
-
+///
+/// Class: SummaryButtonPanel
+///
+/// Assessment summary button panel.
+///
+/// Input:
+///   [double] of the rm score.
+///   [double] of the sq score.
+///   [String] of the gps location.
+///   [DateTime] of the date and time.
+/// Return: [Widget] of the summary button panel.
+///
 class SummaryButtonPanel extends StatelessWidget {
-  final double sqScore;
-  final double rmScore;
-  final String gps;
-  final String description;
 
-  SummaryButtonPanel(this.sqScore, this.rmScore, this.gps, this.description);
+  final double sqScore, rmScore;
+  final String gps;
+  final DateTime dateTime;
+  SummaryButtonPanel(this.sqScore, this.rmScore, this.gps, this.dateTime);
 
   @override
   Widget build(BuildContext context) {
@@ -178,6 +211,7 @@ class SummaryButtonPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
+          /// Back Button.
           IconButton(
             icon: Icon(Icons.arrow_back_outlined),
             tooltip: 'Go Back',
@@ -188,6 +222,7 @@ class SummaryButtonPanel extends StatelessWidget {
                   .push(Routes.createRoutingPage(RmScorePage()));
             },
           ),
+          /// Save Assessment Button.
           SizedBox(
             width: 130,
             height: 60,
@@ -199,43 +234,53 @@ class SummaryButtonPanel extends StatelessWidget {
                   TextStyle(fontSize: 24, fontStyle: FontStyle.italic)),
               child: Text('Save'),
               onPressed: () {
-                _saveEntry(context);
+                _saveAssessmentEntry(context);
               },
             ),
           ),
+          /// Email Button.
           SizedBox(
             width: 130,
             height: 60,
             child: TextButton(
                 style: TextButton.styleFrom(
                     primary: Colors.white,
-                    backgroundColor: Colors.blue,
+                    backgroundColor: PrimaryColor,
                     textStyle:
                     TextStyle(fontSize: 24, fontStyle: FontStyle.italic)),
                 child: Text('Email'),
                 onPressed: () async {
-                  String emailBody = 'Sq Score: ${getSqScore().toString()}\nRm Score: ${getRmScore().toString()}\nDateTime: ${getDateTimeField().toString()}\nGPS (long, lat): ${getGpsField()}\nDescription: ${getDescriptionField()}';
-                  bool emailConfigured = await checkLaunchURL('cathalcorbett3@gmail.com');
+                  String emailBody = 'Sq Score: ${sqScore.toString()}\nRm Score: ${rmScore.toString()}\nDateTime: ${dateTime.toString()}\nGPS (long, lat): $gps\nDescription: ${_getDescriptionField()}';
+                  bool emailConfigured = await checkLaunchMailURL('cathalcorbett3@gmail.com');
 
                   if(emailConfigured) {
-                    _saveEntry(context);
+                    _saveAssessmentEntry(context);
                   }
 
                   launchMailURL(
                       'cathalcorbett3@gmail.com',
                       'GrassVESS Assessment Submission',
-                      emailBody,
-                      context);
+                      emailBody, context);
                 }),
 
           ),
+          /// Redo Assessment Button.
           redoIconButtonWidget(context)
         ]);
   }
 
-  void _saveEntry(context) {
+  ///
+  /// Method: _saveAssessmentEntry
+  ///
+  /// Saves the assessment to storage and displays the main application home page.
+  ///
+  /// Input:
+  /// [BuildContext] handle for the current widget.
+  /// Return: [void].
+  ///
+  void _saveAssessmentEntry(BuildContext context) {
     String saveEntry =
-        '${getSqScore().toString()},${getRmScore().toString()},${getDateTimeField().toString()},${getGpsField()},${getDescriptionField()}\n';
+        '${sqScore.toString()},${rmScore.toString()},${dateTime.toString()},$gps,${_getDescriptionField()}\n';
     amendCsvAssessmentFile(writeString: saveEntry);
 
     Navigator.of(context).pop();

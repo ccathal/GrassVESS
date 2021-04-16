@@ -3,39 +3,28 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
 import 'dart:async';
 
-// Fetch content from the json file
-Future<String> readJsonInformation(String linkString) async {
+///
+/// Method: readJson
+///
+/// Method to read link JSON information.
+///
+/// Input:
+///   [String] linkString is the link name to read data from.
+///   [String] instruction on the type of data to read.
+/// Return: [Future<dynamic>] string or list<string> data returned.
+///
+Future<dynamic> readJson(String linkString, String instruction) async {
   String dataStr =  await rootBundle.loadString('link_data/data.json');
   Map data = json.decode(dataStr);
   Map link = data[linkString];
-  String information = link['data'];
-  return information;
-}
 
-// Fetch content from the json file
-Future<String> readJsonInstruction(String linkString) async {
-  String dataStr =  await rootBundle.loadString('link_data/data.json');
-  Map data = json.decode(dataStr);
-  Map link = data[linkString];
-  String instruction = link['instruction'];
-  return instruction;
-}
-
-// Fetch content from the json file
-Future<String> readJsonPicture(String linkString) async {
-  String dataStr =  await rootBundle.loadString('link_data/data.json');
-  Map data = json.decode(dataStr);
-  Map link = data[linkString];
-  String picture = link['image'];
-  return picture;
-}
-
-// Fetch content from the json file
-Future<List> readJsonCard(String linkString) async {
-  String dataStr =  await rootBundle.loadString('link_data/data.json');
-  Map data = json.decode(dataStr);
-  Map link = data[linkString];
-  String picture = link['image'];
-  String information = link['data'];
-  return [information, picture];
+  if(instruction == 'information') {
+    return link['data'];
+  }
+  else if(instruction == 'instruction') {
+    return link['instruction'];
+  }
+  else {
+    return [link['image'], link['data']];
+  }
 }

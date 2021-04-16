@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/splashScreen.dart';
 
-/*
-  Main program entry point.
- */
-
+///
+/// Application Main Entry Point.
+///
 void main() {
   runApp(MyApp());
 }
 
+///
+/// Method: MyApp
+///
+/// Main Application Method.
+///
+/// Return: [Widget] is the main application page that displays the splash screen.
+///
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
