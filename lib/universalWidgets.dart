@@ -8,6 +8,8 @@ import 'main.dart';
 /// Main color of the application.
 const PrimaryColor = const Color(0xFF0F70B7);
 
+const BottomButtonPad = 20.0;
+
 /// Enum for button click of below AlertDialog widget.
 enum ConfirmAction { Cancel, Accept }
 
@@ -89,8 +91,35 @@ AppBar appBarWidget(String title, {bool implyLeading = false}) {
   return AppBar(
       title: Text(title),
       backgroundColor: PrimaryColor,
-      automaticallyImplyLeading: implyLeading);
+      automaticallyImplyLeading: implyLeading
+  );
 }
+
+AppBar appBarWidgetProgress(String title, String progress, {bool implyLeading = false}) {
+  return AppBar(
+    backgroundColor: PrimaryColor,
+    automaticallyImplyLeading: implyLeading,
+    title: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Text(title),
+        Text(progress),
+      ],
+    ),
+  );
+}
+
+/*String getProgressPercentage(LinkdList linkedList) {
+  Future<dynamic> progressStr = readJson(linkedList.getPreviousElement().getLinkName(), 'progress');
+  if (progressStr != null) {
+    progressStr.then((val) {
+      if (val == null) {
+        return '';
+      }
+      return val.toString() + ' %';
+    });
+  }
+}*/
 
 ///
 /// Method: futureInstructionBoxWidget
@@ -180,5 +209,36 @@ class InstructionBox extends StatelessWidget {
 Widget makeSnackBar(String snackText) {
    return SnackBar(
     content: Text(snackText),
+  );
+}
+
+
+///
+///
+///
+Widget futureProgressIndicator(String link) {
+  return new FutureBuilder<dynamic>(
+    future:
+    readJson(link, 'progress'),
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        return Column(children: <Widget>[
+          progressIndicatorWidget(double.parse(snapshot.data.toString()) / 100),
+          //Text('${(double.parse(snapshot.data.toString())).round()}%')
+        ]);
+      } else if (snapshot.hasError) {
+        return new Text("${snapshot.error}");
+      }
+      return new CircularProgressIndicator();
+    },
+  );
+}
+
+LinearProgressIndicator progressIndicatorWidget(double value) {
+  return LinearProgressIndicator(
+    minHeight: 8,
+    backgroundColor: PrimaryColor,
+    valueColor: new AlwaysStoppedAnimation<Color>(Colors.green),
+    value: value,
   );
 }

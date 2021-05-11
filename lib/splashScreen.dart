@@ -39,10 +39,12 @@ class SplashScreenState extends State<SplashScreen> {
             Spacer(
               flex: 2,
             ),
-            Text(
-              'G r a s s V E S S',
-              style: TextStyle(fontSize: 50, color: Colors.black),
-            ),
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                'G r a s s V E S S',
+                style: TextStyle(fontSize: 50, color: Colors.black),
+            )),
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: Text(

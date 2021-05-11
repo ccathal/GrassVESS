@@ -129,7 +129,7 @@ class DisplaySavedAssessments extends StatelessWidget {
                 onPressed: () {
                   String emailBody =
                       'Sq Score: ${splitted[0]}\nRm Score: ${splitted[1]}\nDateTime: ${splitted[2]}\nGPS (long, lat): ${splitted[3]}\nDescription: ${splitted[4]}';
-                  launchMailURL('cathalcorbett3@gmail.com',
+                  launchMailURL('grassland.info.temp@gmail.com',
                       'GrassVESS Assessment Submission', emailBody, context);
                 },
               ),

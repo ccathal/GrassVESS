@@ -14,24 +14,24 @@ class DisplayContactInformation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: appBarWidget('Previous GrassVESS Assessment'),
+        appBar: appBarWidget('Grassland Agro Contact'),
         body: Center(
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-              Spacer(),
+              //Spacer(),
               /// Phone icon button.
-              IconButton(
-                //icon: Icon(Icons.phone),
-                icon: new Icon(Icons.phone, size: 50.0),
-                tooltip: 'Phone Call',
-                onPressed: () {
-                  launchPhoneURL(context);
-                },
-              ),
-              Padding(padding: EdgeInsets.only(bottom: 8.0)),
-              Text('(+353) 86 846 6734'),
+              // IconButton(
+              //   //icon: Icon(Icons.phone),
+              //   icon: new Icon(Icons.phone, size: 50.0),
+              //   tooltip: 'Phone Call',
+              //   onPressed: () {
+              //     launchPhoneURL(context);
+              //   },
+              // ),
+              // Padding(padding: EdgeInsets.only(bottom: 8.0)),
+              // Text('(+353) 86 846 6734'),
               Spacer(),
               /// Email icon button.
               IconButton(
@@ -39,12 +39,12 @@ class DisplayContactInformation extends StatelessWidget {
                 icon: new Icon(Icons.email, size: 50.0),
                 tooltip: 'Email',
                 onPressed: () {
-                  launchMailURL('cathalcorbett3@gmail.com', 'GrassVESS App Query',
+                  launchMailURL('grassland.info.temp@gmail.com', 'GrassVESS App Query',
                       'Your Query ...', context);
                 },
               ),
               Padding(padding: EdgeInsets.only(bottom: 8.0)),
-              Text('cathalcorbett3@gmail.com'),
+              Text('grassland.info.temp@gmail.com'),
               Spacer(),
               /// Map icon buttons (x4).
               _mapIcon(52.6528337, -8.6584745, context),

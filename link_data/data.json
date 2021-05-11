@@ -2,127 +2,153 @@
   "link1_1" : {
     "instruction": "Assess the most evidently compact layer within the lower portion (below the root-mat layer) with regard to the descriptions below",
     "data": "Does the lower portion appear highly porous?",
-    "image" : "link1_1.png"
+    "image" : "link1_1.png",
+    "percentage": "5"
   },
   "link1_2" : {
     "instruction": "Assess the most evidently compact layer within the lower portion (below the root-mat layer) with regard to the descriptions below",
     "data": "Does the lower portion exhibit some macro-pores or cracks?",
-    "image" : "link1_2.png"
+    "image" : "link1_2.png",
+    "percentage": "10"
   },
   "link1_3" : {
     "instruction": "Assess the most evidently compact layer within the lower portion (below the root-mat layer) with regard to the descriptions below",
     "data": "Does the sample exhibit very few macro-pores or cracks?",
-    "image" : "link1_3.png"
+    "image" : "link1_3.png",
+    "percentage": "15"
   },
   "link2_1" : {
     "instruction": "Carefully expose aggregates by hand",
     "data": "Are aggregates predominantly less than 1 cm?",
-    "image" : "link2_1.png"
+    "image" : "link2_1.png",
+    "percentage": "20"
   },
   "link2_2" : {
     "instruction": "Carefully expose aggregates by hand",
     "data": "Do aggregates range from less than 1 cm to 10 cm?",
-    "image" : "link2_2.png"
+    "image" : "link2_2.png",
+    "percentage": "20"
   },
   "link2_3" : {
     "instruction": "Carefully expose aggregates by hand",
     "data": "Are aggregates predominantly larger than 7 cm?",
-    "image" : "link2_3.png"
+    "image" : "link2_3.png",
+    "percentage": "20"
   },
   "link2_4" : {
     "instruction": "Carefully expose aggregates by hand",
     "data": "Are aggregates round or sub-angular but not angular/sharp?",
-    "image" : "link2_4.png"
+    "image" : "link2_4.png",
+    "percentage": "25"
   },
   "link2_5" : {
     "instruction": "Carefully expose aggregates by hand",
     "data": "Are some angular/sharp aggregates present?",
-    "image" : "link2_5.png"
+    "image" : "link2_5.png",
+    "percentage": "30"
   },
   "link2_6" : {
     "instruction": "Carefully expose aggregates by hand",
     "data": "Are aggregates predominantly angular/sharp or platy in nature?",
-    "image" : "link2_6.png"
+    "image" : "link2_6.png",
+    "percentage": "35"
   },
   "link3_1" : {
     "instruction": "Gently break up aggregates by hand",
     "data": "Do aggregates readily crumble between fingers?",
-    "image" : "link3_1.png"
+    "image" : "link3_1.png",
+    "percentage": "40"
   },
   "link3_2" : {
     "instruction": "Gently break up aggregates by hand",
     "data": "Are aggregates fragile and easy to break with one hand?",
-    "image" : "link3_2.png"
+    "image" : "link3_2.png",
+    "percentage": "40"
   },
   "link3_3" : {
     "instruction": "Gently break up aggregates by hand",
     "data": "Are aggregates firm but fairly easy to break with one hand?",
-    "image" : "link3_3.png"
+    "image" : "link3_3.png",
+    "percentage": "40"
   },
   "link3_4" : {
     "instruction": "Gently break up aggregates by hand",
     "data": "Are aggregates difficult to break, requiring considerable force to break with one hand, possibly requiring two hands?",
-    "image" : "link3_4.png"
+    "image" : "link3_4.png",
+    "percentage": "40"
   },
   "link3_5" : {
     "instruction": "Gently break up aggregates by hand",
     "data": "Any larger aggregates are composed of smaller ones, held together by roots",
-    "image" : "link3_5.png"
+    "image" : "link3_5.png",
+    "percentage": "50"
   },
   "link3_6" : {
     "instruction": "Gently break up aggregates by hand",
     "data": "Do aggregates generally appear porous?",
-    "image" : "link3_6.png"
+    "image" : "link3_6.png",
+    "percentage": "45"
   },
   "link3_7" : {
     "instruction": "Gently break up aggregates by hand",
     "data": "Some aggregates appear to have limited internal porosity (some dense clods may be present)",
-    "image" : "link3_7.png"
+    "image" : "link3_7.png",
+    "percentage": "50"
   },
   "link3_8" : {
     "instruction": "Gently break up aggregates by hand",
     "data": "Aggregates predominantly appear non-porous , with porosity evident only in the form of macro-pores",
-    "image" : "link3_8.png"
+    "image" : "link3_8.png",
+    "percentage": "50"
   },
   "link3_9" : {
     "instruction": "Gently break up aggregates by hand",
     "data": "Do roots grow within aggregates?",
-    "image" : "link3_9.png"
+    "image" : "link3_9.png",
+    "percentage": "55"
   },
   "link3_10" : {
     "instruction": "Gently break up aggregates by hand",
     "data": "Are roots clustered within cracks or around aggregates?",
-    "image" : "link3_10.png"
+    "image" : "link3_10.png",
+    "percentage": "60"
   },
   "link4_1" : {
     "instruction": "Assign an Sq score. Intermediate scores can be assigned where soil properties fall between two classifications",
-    "data": "1.0"
+    "data": "1.0",
+    "percentage": "70"
   },
   "link4_2" : {
     "instruction": "Assign an Sq score. Intermediate scores can be assigned where soil properties fall between two classifications",
-    "data": "2.0"
+    "data": "2.0",
+    "percentage": "70"
   },
   "link4_3" : {
     "instruction": "Assign an Sq score. Intermediate scores can be assigned where soil properties fall between two classifications",
-    "data": "3.0"
+    "data": "3.0",
+    "percentage": "70"
   },
   "link4_4" : {
     "instruction": "Assign an Sq score. Intermediate scores can be assigned where soil properties fall between two classifications",
-    "data": "4.0"
+    "data": "4.0",
+    "percentage": "70"
   },
   "rm_1" : {
     "instruction": "Take a root-mat layer section. While holding it upside down, gently prize it apart using your thumbs. Examine the undisturbed soil within this layer and assign one of the following Rm scores which best applies",
     "data": "Aggregates are predominantly less than 1cm\nThe layer appears loose and highly porous\nRoots grow throughout the layer",
-    "image": "rm1_merged.jpg"
+    "image": "rm1_merged.jpg",
+    "percentage": "80"
   },
   "rm_2" : {
     "instruction": "Take a root-mat layer section. While holding it upside down, gently prize it apart using your thumbs. Examine the undisturbed soil within this layer and assign one of the following Rm scores which best applies",
     "data": "Aggregates range from less than 1 cm to 6 cm\nSome angular/sharp aggregates may be present\nThe layer exhibits some porosity, though zones of limited porosity are evident\nRoots grow throughout the layer",
-    "image": "rm2_merged.jpg"
+    "image": "rm2_merged.jpg",
+    "percentage": "80"
   },
   "rm_3" : {
     "instruction": "Take a root-mat layer section. While holding it upside down, gently prize it apart using your thumbs. Examine the undisturbed soil within this layer and assign one of the following Rm scores which best applies",
     "data": "Aggregates are predominantly larger than 5 cm\nAngular/sharp, blocky aggregates are present\nBoth the overall layer and individual aggregates exhibit limited porosity\nRoots may or may not grow within the layer",
-    "image": "rm3_merged.jpg"
+    "image": "rm3_merged.jpg",
+    "percentage": "80"
   }
 }

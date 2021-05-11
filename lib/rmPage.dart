@@ -53,16 +53,23 @@ class RmScorePage extends StatelessWidget {
   /// Main rm score page widget.
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarWidget('GrassVESS Assessment'),
-      body: SingleChildScrollView(
-        child: new Column(children: <Widget>[
-          futureInstructionBoxWidget('rm_1'),
-          _futureRmCardWidget('rm_1'),
-          _futureRmCardWidget('rm_2'),
-          _futureRmCardWidget('rm_3'),
-        ]),
-      ),
-    );
+        appBar: appBarWidget('GrassVESS Assessment'),
+        body: NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (overScroll) {
+            overScroll.disallowGlow();
+            return;
+          },
+          child: Column(children: <Widget>[
+              futureProgressIndicator('rm_1'),
+              Expanded( child: SingleChildScrollView(
+                child: new Column(children: <Widget>[
+                  futureInstructionBoxWidget('rm_1'),
+                  _futureRmCardWidget('rm_1'),
+                  _futureRmCardWidget('rm_2'),
+                  _futureRmCardWidget('rm_3'),
+                ])),
+          ),
+        ])));
   }
 }
 

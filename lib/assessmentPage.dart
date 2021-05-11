@@ -15,20 +15,49 @@ import 'main.dart';
 /// Input: A class object [LinkdList].
 /// Return: [Widget] of the assessment page.
 ///
-class AssessmentPage extends StatelessWidget {
+class AssessmentPage extends StatefulWidget {
   final LinkdList linkedList;
 
   AssessmentPage(this.linkedList);
 
+  AssessmentPageWidget createState() => AssessmentPageWidget(linkedList);
+}
+
+class AssessmentPageWidget extends State {
+  final LinkdList linkedList;
+
+  AssessmentPageWidget(this.linkedList);
+
+  String progressPlaceHolder = '... %';
+
   @override
   Widget build(BuildContext context) {
+    // if (!linkedList.isEmpty()) {
+    //   Future<dynamic> progressStr = readJson(
+    //       linkedList.getPreviousElement().getLinkName(), 'progress');
+    //   if (progressStr != null) {
+    //     progressStr.then((val) {
+    //       if (val == null) {
+    //         return;
+    //       }
+    //       setState(() {
+    //         print(progressStr.toString());
+    //         progressPlaceHolder = val.toString() + ' %';
+    //       });
+    //     });
+    //   }
+    // }
+
     return Scaffold(
         appBar: appBarWidget('GrassVESS Assessment'),
+        //appBarWidgetProgress('GrassVESS Assessment', progressPlaceHolder),
         body: Center(
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
+              futureProgressIndicator(linkedList.getPreviousElement().getLinkName()),
+
               /// Instruction Box Widget.
               Align(
                   alignment: Alignment.topCenter,
@@ -45,7 +74,7 @@ class AssessmentPage extends StatelessWidget {
               Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 40),
+                    padding: const EdgeInsets.only(bottom: BottomButtonPad),
                     child: ButtonPanel(linkedList),
                   ))
             ])));
@@ -175,9 +204,13 @@ class ButtonPanel extends StatelessWidget {
               linkedList.removeLastLinkElement();
               Navigator.of(context).pop();
               if (linkedList.isEmpty()) {
+                print('gete');
                 Navigator.of(context).pop();
+                print('gete1');
                 Navigator.of(context).push(Routes.createRoutingPage(MyApp()));
+                print('gete11');
               } else {
+                print('gete222');
                 Navigator.of(context)
                     .push(Routes.createRoutingPage(AssessmentPage(linkedList)));
               }
@@ -189,50 +222,55 @@ class ButtonPanel extends StatelessWidget {
               'null_link'))
 
             /// if right link if not null, display button
-            SizedBox(
-              width: 130,
-              height: 60,
-              child: TextButton(
-                  style: TextButton.styleFrom(
-                      primary: Colors.white,
-                      backgroundColor: Colors.green,
-                      textStyle:
-                          TextStyle(fontSize: 24, fontStyle: FontStyle.italic)),
-                  child: Text('Yes'),
-                  onPressed: () {
-                    /// Add right link to list.
-                    Link addLink = linkedList.getPreviousElement().right;
-                    linkedList.addLinkElement(addLink);
+            Expanded(
+                child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 2),
+                    child: SizedBox(
+                      height: 60,
+                      child: TextButton(
+                          style: TextButton.styleFrom(
+                              primary: Colors.white,
+                              backgroundColor: Colors.green,
+                              textStyle: TextStyle(
+                                  fontSize: 24, fontStyle: FontStyle.italic)),
+                          child: Text('Yes'),
+                          onPressed: () {
+                            /// Add right link to list.
+                            Link addLink =
+                                linkedList.getPreviousElement().right;
+                            linkedList.addLinkElement(addLink);
 
-                    /// Display next assessment page.
-                    _nextAssessmentRoute(addLink, context);
-                  }),
-            ),
+                            /// Display next assessment page.
+                            _nextAssessmentRoute(addLink, context);
+                          }),
+                    ))),
 
           /// No Button.
           if (!(linkedList.getPreviousElement().left.getLinkName() ==
               'null_link'))
 
             /// if left link if not null, display button.
-            SizedBox(
-              width: 130,
-              height: 60,
-              child: TextButton(
-                  style: TextButton.styleFrom(
-                      primary: Colors.white,
-                      backgroundColor: Colors.red,
-                      textStyle:
-                          TextStyle(fontSize: 24, fontStyle: FontStyle.italic)),
-                  child: Text('No'),
-                  onPressed: () {
-                    /// Add left link to list.
-                    Link addLink = linkedList.getPreviousElement().left;
-                    linkedList.addLinkElement(addLink);
+            Expanded(
+                child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 2),
+                    child: SizedBox(
+                      height: 60,
+                      child: TextButton(
+                          style: TextButton.styleFrom(
+                              primary: Colors.white,
+                              backgroundColor: Colors.red,
+                              textStyle: TextStyle(
+                                  fontSize: 24, fontStyle: FontStyle.italic)),
+                          child: Text('No'),
+                          onPressed: () {
+                            /// Add left link to list.
+                            Link addLink = linkedList.getPreviousElement().left;
+                            linkedList.addLinkElement(addLink);
 
-                    /// Display next assessment page.
-                    _nextAssessmentRoute(addLink, context);
-                  }),
-            ),
+                            /// Display next assessment page.
+                            _nextAssessmentRoute(addLink, context);
+                          }),
+                    ))),
 
           /// Redo Button.
           redoIconButtonWidget(context),

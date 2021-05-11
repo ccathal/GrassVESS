@@ -32,16 +32,24 @@ void setSqScore() {
 /// Input: [linkedList] of the links that have been previously appended.
 /// Output: [Widget] of the sq score page.
 ///
-class SqScorePage extends StatelessWidget {
-
+class SqScorePage extends StatefulWidget {
   final LinkdList linkedList;
+
   SqScorePage(this.linkedList);
+
+  SqScorePageWidget createState() => SqScorePageWidget(linkedList);
+}
+
+class SqScorePageWidget extends State {
+  final LinkdList linkedList;
+
+  SqScorePageWidget(this.linkedList);
 
   /// Future to read the json data to populate the button panel.
   Widget futureScoreSqTextButton() {
     return new FutureBuilder<dynamic>(
-      future:
-      readJson(linkedList.getPreviousElement().getLinkName(), 'information'),
+      future: readJson(
+          linkedList.getPreviousElement().getLinkName(), 'information'),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return DisplayButtonPanelSqScore(snapshot.data, linkedList);
@@ -57,25 +65,27 @@ class SqScorePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBarWidget('GrassVESS Assessment'),
+      //appBarWidgetProgress('GrassVESS Assessment', progressPlaceHolder),
       body: Center(
-        child: new Stack(children: <Widget>[
+        child: new Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+          futureProgressIndicator(
+              linkedList.getPreviousElement().getLinkName()),
+
           /// Instruction Box Widget.
-          Positioned(
-              child: Align(
-                  alignment: Alignment.topCenter,
-                  child: futureInstructionBoxWidget(linkedList.getPreviousElement().getLinkName()))),
+          Align(
+              alignment: FractionalOffset.topCenter,
+              child: futureInstructionBoxWidget(
+                  linkedList.getPreviousElement().getLinkName())),
+
           /// Sq Score Text Button Widget.
-          Positioned(
-              child: Align(
-                  alignment: Alignment.center,
-                  child: futureScoreSqTextButton())),
+          Expanded(child: futureScoreSqTextButton()),
+
           /// Sq Score Button Panel.
-          Positioned(
-              child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                      padding: const EdgeInsets.only(bottom: 40),
-                      child: ButtonPanelSqSubmit(linkedList)))),
+          Align(
+              alignment: FractionalOffset.bottomCenter,
+              child: Padding(
+                  padding: const EdgeInsets.only(bottom: BottomButtonPad, top: 4),
+                  child: ButtonPanelSqSubmit(linkedList))),
         ]),
       ),
     );
@@ -94,9 +104,9 @@ class SqScorePage extends StatelessWidget {
 /// Returns: [Widget] of the sq score page button panel.
 ///
 class DisplayButtonPanelSqScore extends StatefulWidget {
-
   final LinkdList linkedList;
   final String information;
+
   DisplayButtonPanelSqScore(this.information, this.linkedList);
 
   DisplayButtonPanelSqScoreWidget createState() =>
@@ -104,9 +114,9 @@ class DisplayButtonPanelSqScore extends StatefulWidget {
 }
 
 class DisplayButtonPanelSqScoreWidget extends State {
-
   final String information;
   final LinkdList linkedList;
+
   DisplayButtonPanelSqScoreWidget(this.information, this.linkedList);
 
   String buttonText;
@@ -169,33 +179,31 @@ class DisplayButtonPanelSqScoreWidget extends State {
     }
 
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          ConstrainedBox(
-            constraints: BoxConstraints.tightFor(width: 200, height: 200),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: CircleBorder(),
-                primary: _getSqColor(getSqScore()),
-                onPrimary: Colors.white, // foreground
-              ),
-              child: Text(
-                buttonText,
-                style: TextStyle(fontSize: 30),
-                textAlign: TextAlign.center,
-              ),
-              onPressed: () {},
+          Padding(padding: EdgeInsets.only(bottom: 20.0)),
+          Expanded(
+            child: Container(
+              width: 260,
+                  child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              //shape: CircleBorder(),
+              primary: _getSqColor(getSqScore()),
+              onPrimary: Colors.white, // foreground
             ),
-          ),
-          Padding(padding: EdgeInsets.only(bottom: 8.0)),
+            child: Text(
+              buttonText,
+              style: TextStyle(fontSize: 30),
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () {},
+          ))),
+          Padding(padding: EdgeInsets.only(bottom: 20.0)),
           Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0),
+              padding: EdgeInsets.symmetric(vertical: 4.0),
               child: Text(
                 'Click for Intermediate Value:',
                 style: TextStyle(fontSize: 20),
-              )
-          ),
+              )),
           Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -218,6 +226,7 @@ class DisplayButtonPanelSqScoreWidget extends State {
                     child: Text('- 0.5'),
                   ),
                 ),
+                SizedBox(width: 1),
                 SizedBox(
                   width: 130,
                   height: 60,
@@ -229,15 +238,15 @@ class DisplayButtonPanelSqScoreWidget extends State {
                     },
                     style: TextButton.styleFrom(
                         primary: Colors.white,
-                        backgroundColor:
-                        _getIntermediateValueButtonColorPlus(
+                        backgroundColor: _getIntermediateValueButtonColorPlus(
                             information, plusClicked),
                         textStyle: TextStyle(
                             fontSize: 24, fontStyle: FontStyle.italic)),
                     child: Text('+ 0.5'),
                   ),
                 ),
-              ])
+              ]),
+          Padding(padding: EdgeInsets.only(bottom: 20.0)),
         ]);
   }
 
@@ -247,11 +256,9 @@ class DisplayButtonPanelSqScoreWidget extends State {
   MaterialColor _getSqColor(double sqVal) {
     if (sqVal < 1.5) {
       return Colors.green;
-    }
-    else if (sqVal >= 1.5 && sqVal <= 2.0) {
+    } else if (sqVal >= 1.5 && sqVal <= 2.0) {
       return Colors.lightGreen;
-    }
-    else if (sqVal > 2.0 && sqVal <= 3.0) {
+    } else if (sqVal > 2.0 && sqVal <= 3.0) {
       return Colors.orange;
     } else {
       return Colors.red;
@@ -261,8 +268,8 @@ class DisplayButtonPanelSqScoreWidget extends State {
   ///
   /// Method to get the color for the intermediate value '+0.5' button.
   ///
-  Color _getIntermediateValueButtonColorPlus(String information,
-      bool minusClicked) {
+  Color _getIntermediateValueButtonColorPlus(
+      String information, bool minusClicked) {
     if (double.parse(information) >= 4) {
       return Colors.grey;
     } else {
@@ -273,15 +280,14 @@ class DisplayButtonPanelSqScoreWidget extends State {
   ///
   /// Method to get the color for the intermediate value '-0.5' button.
   ///
-  Color _getIntermediateValueButtonColorMinus(String information,
-      bool minusClicked) {
+  Color _getIntermediateValueButtonColorMinus(
+      String information, bool minusClicked) {
     if (double.parse(information) <= 1) {
       return Colors.grey;
     } else {
       return minusClicked ? _getSqColor(getSqScore()) : PrimaryColor;
     }
   }
-
 }
 
 ///
@@ -293,8 +299,8 @@ class DisplayButtonPanelSqScoreWidget extends State {
 /// Returns: [Widget] of the sq score page button panel.
 ///
 class ButtonPanelSqSubmit extends StatelessWidget {
-
   final LinkdList linkedList;
+
   ButtonPanelSqSubmit(this.linkedList);
 
   @override
@@ -319,16 +325,17 @@ class ButtonPanelSqSubmit extends StatelessWidget {
               }
             },
           ),
+
           /// Continue Button.
-          SizedBox(
-            width: 130,
+          Expanded(
+              child: SizedBox(
             height: 60,
             child: TextButton(
               style: TextButton.styleFrom(
                   primary: Colors.white,
                   backgroundColor: PrimaryColor,
                   textStyle:
-                  TextStyle(fontSize: 24, fontStyle: FontStyle.italic)),
+                      TextStyle(fontSize: 24, fontStyle: FontStyle.italic)),
               child: Text('Continue'),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -336,7 +343,8 @@ class ButtonPanelSqSubmit extends StatelessWidget {
                     .push(Routes.createRoutingPage(RmScorePage()));
               },
             ),
-          ),
+          )),
+
           /// Redo Assessment Button.
           redoIconButtonWidget(context),
         ]);

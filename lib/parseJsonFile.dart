@@ -24,6 +24,9 @@ Future<dynamic> readJson(String linkString, String instruction) async {
   else if(instruction == 'instruction') {
     return link['instruction'];
   }
+  else if(instruction == 'progress') {
+    return link['percentage'];
+  }
   else {
     return [link['image'], link['data']];
   }

@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/splashScreen.dart';
 
 ///
 /// Application Main Entry Point.
 ///
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+    [
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ],
+  ).then((val) {
+    runApp(MyApp());
+  });
 }
 
 ///

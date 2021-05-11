@@ -56,6 +56,7 @@ class MainAssessmentSummaryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: appBarWidget('GrassVESS Assessment'),
       body: Center(
         /// Get GPS location.
@@ -67,6 +68,7 @@ class MainAssessmentSummaryPage extends StatelessWidget {
               Position pos = snapshot.data;
               String gpsField = '${pos.latitude}: ${pos.longitude}';
               return new Column(children: <Widget>[
+                progressIndicatorWidget(0.9),
                 ShowSummaryInformation(sqScore, rmScore, gpsField),
               ]);
             }
@@ -75,6 +77,7 @@ class MainAssessmentSummaryPage extends StatelessWidget {
               SnackBar snackBar = makeSnackBar(snapshot.error.toString());
               String gpsField = 'null: null';
               return new Column(children: <Widget>[
+                progressIndicatorWidget(0.9),
                 ShowSummaryInformation(sqScore, rmScore, gpsField, snackBar),
               ]);
             }
@@ -127,18 +130,11 @@ class ShowSummaryInformation extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Spacer(),
-                  _textFormSummary('Sq Score ' + sqScore.toString(), 'Sq Score'),
-                  Spacer(),
-                  _textFormSummary('Rm Score ' + rmScore.toString(), 'Rm Score'),
-                  Spacer(),
-                  _textFormSummary(DateTime.now().toString(), 'Date & Time'),
-                  Spacer(),
-                  _textFormSummary(gpsField, 'GPS (longitude: latitude)'),
-                  Spacer(),
                   /// Input field for user to enter description.
                   /// User is limited to 50 characters.
                   /// User cannot enter commas (,) as the storage file is in CSV format.
                   TextFormField(
+                    maxLength: 50,
                     inputFormatters: [FilteringTextInputFormatter.deny(',')],
                     //controller: TextEditingController(text: text),
                     readOnly: false,
@@ -149,11 +145,18 @@ class ShowSummaryInformation extends StatelessWidget {
                       ),
                       labelText: 'Your Description',
                     ),
-                    maxLength: 50,
                     onChanged: (String val) {
                       descriptionField = val;
                     },
                   ),
+                  Spacer(),
+                  _textFormSummary('Sq Score ' + sqScore.toString(), 'Sq Score'),
+                  Spacer(),
+                  _textFormSummary('Rm Score ' + rmScore.toString(), 'Rm Score'),
+                  Spacer(),
+                  _textFormSummary(DateTime.now().toString(), 'Date & Time'),
+                  Spacer(),
+                  _textFormSummary(gpsField, 'GPS (longitude: latitude)'),
                   Spacer(),
                   SummaryButtonPanel(
                       sqScore, rmScore, gpsField, dateTimeField),
@@ -223,8 +226,7 @@ class SummaryButtonPanel extends StatelessWidget {
             },
           ),
           /// Save Assessment Button.
-          SizedBox(
-            width: 130,
+          Expanded( child:SizedBox(
             height: 60,
             child: TextButton(
               style: TextButton.styleFrom(
@@ -237,10 +239,10 @@ class SummaryButtonPanel extends StatelessWidget {
                 _saveAssessmentEntry(context);
               },
             ),
-          ),
+          )),
+          SizedBox(width:5),
           /// Email Button.
-          SizedBox(
-            width: 130,
+          Expanded( child: SizedBox(
             height: 60,
             child: TextButton(
                 style: TextButton.styleFrom(
@@ -258,12 +260,12 @@ class SummaryButtonPanel extends StatelessWidget {
                   }
 
                   launchMailURL(
-                      'cathalcorbett3@gmail.com',
+                      'grassland.info.temp@gmail.com',
                       'GrassVESS Assessment Submission',
                       emailBody, context);
                 }),
 
-          ),
+          )),
           /// Redo Assessment Button.
           redoIconButtonWidget(context)
         ]);
